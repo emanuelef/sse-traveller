@@ -70,7 +70,7 @@ export default function App({ sizeScale = 125, mapStyle = MAP_STYLE }) {
     sse.addEventListener("current-value", (event) => {
       const parsedData = JSON.parse(event.data);
       const currentValue = parsedData.data;
-      console.log(currentValue);
+      //console.log(currentValue);
 
       if (newPosition.current) {
         setPosition(currentValue.lat, currentValue.lon);

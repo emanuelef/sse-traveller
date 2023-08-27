@@ -85,7 +85,19 @@ func formatSSEMessage(eventType string, data any) (string, error) {
 	return sb.String(), nil
 }
 
+func WrapAround(f, low, high float64) float64 {
+	if f < low {
+		return high
+	}
+	if f > high {
+		return low
+	}
+	return f
+}
+
 func main() {
+
+	// -90 to 90 for latitude and -180 to 180 for longitude
 
 	pos := Coord3D{}
 	pos.Lat = 51.477487
@@ -189,7 +201,7 @@ func main() {
 		return nil
 	})
 
-	ticker := time.NewTicker(1 * time.Second)
+	ticker := time.NewTicker(25 * time.Millisecond)
 
 	go func() {
 		for {
@@ -206,7 +218,8 @@ func main() {
 					wg.Add(1)
 					go func(cs *session) {
 						defer wg.Done()
-						currentPosition.Lat -= 0.003
+						currentPosition.Lat = WrapAround(currentPosition.Lat-0.08, -90, 90)
+						currentPosition.Lon = WrapAround(currentPosition.Lon-0.08, -180, 180)
 						currentPosition.Timestamp = time.Now().Unix()
 						cs.stateChannel <- *currentPosition
 					}(s)
